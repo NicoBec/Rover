@@ -1,0 +1,58 @@
+﻿@model Rover.Models.Reading
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Reading</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReadingDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReadingDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReadingValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReadingValue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReadingVariance)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReadingVariance)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BillMonth.BillMonthDesc)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BillMonth.BillMonthDesc)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Unit.UnitName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Unit.UnitName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ReadingID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

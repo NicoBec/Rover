@@ -1,0 +1,668 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="RoverModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BillableItems">
+          <Key>
+            <PropertyRef Name="BillableItemID" />
+          </Key>
+          <Property Name="BillableItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillableItemType" Type="int" />
+          <Property Name="UnitID" Type="int" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="StartDate" Type="date" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="ActiveBillableItem" Type="bit" />
+        </EntityType>
+        <EntityType Name="BillItems">
+          <Key>
+            <PropertyRef Name="BillItemID" />
+          </Key>
+          <Property Name="BillItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillableItemID" Type="int" />
+          <Property Name="BillItemAmmount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="BillId" Type="int" />
+        </EntityType>
+        <EntityType Name="BillItemType">
+          <Key>
+            <PropertyRef Name="BillItemID" />
+          </Key>
+          <Property Name="BillItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillItemDesc" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="BillMonths">
+          <Key>
+            <PropertyRef Name="BillMonthID" />
+          </Key>
+          <Property Name="BillMonthID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillMonthDate" Type="date" />
+          <Property Name="BillMonthDesc" Type="nvarchar(max)" />
+          <Property Name="IsActiveBillMonth" Type="bit" />
+        </EntityType>
+        <EntityType Name="Bills">
+          <Key>
+            <PropertyRef Name="BillID" />
+          </Key>
+          <Property Name="BillID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillMonthID" Type="int" />
+          <Property Name="UnitID" Type="int" />
+          <Property Name="BillTotal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="BillPaid" Type="decimal" Precision="18" Scale="4" />
+        </EntityType>
+        <EntityType Name="Readings">
+          <Key>
+            <PropertyRef Name="ReadingID" />
+          </Key>
+          <Property Name="ReadingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReadingDate" Type="datetime" />
+          <Property Name="ReadingValue" Type="decimal" Precision="18" Scale="8" />
+          <Property Name="UnitID" Type="int" />
+          <Property Name="ReadingVariance" Type="decimal" Precision="18" Scale="8" />
+          <Property Name="BillMonthID" Type="int" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Units">
+          <Key>
+            <PropertyRef Name="UnitID" />
+          </Key>
+          <Property Name="UnitID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UnitName" Type="nvarchar(max)" />
+          <Property Name="UnitTypeID" Type="int" />
+          <Property Name="UnitParentID" Type="int" />
+          <Property Name="UnitNumber" Type="int" />
+        </EntityType>
+        <EntityType Name="UnitType">
+          <Key>
+            <PropertyRef Name="UnitTypeID" />
+          </Key>
+          <Property Name="UnitTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UnitDesc" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK_BillItem_BillItemType">
+          <End Role="BillItemType" Type="Self.BillItemType" Multiplicity="0..1" />
+          <End Role="BillableItems" Type="Self.BillableItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillItemType">
+              <PropertyRef Name="BillItemID" />
+            </Principal>
+            <Dependent Role="BillableItems">
+              <PropertyRef Name="BillableItemType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BillItem_Unit">
+          <End Role="Units" Type="Self.Units" Multiplicity="0..1" />
+          <End Role="BillableItems" Type="Self.BillableItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="BillableItems">
+              <PropertyRef Name="UnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BillItems_BillableItems">
+          <End Role="BillableItems" Type="Self.BillableItems" Multiplicity="0..1" />
+          <End Role="BillItems" Type="Self.BillItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillableItems">
+              <PropertyRef Name="BillableItemID" />
+            </Principal>
+            <Dependent Role="BillItems">
+              <PropertyRef Name="BillableItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BillItems_Bills">
+          <End Role="Bills" Type="Self.Bills" Multiplicity="0..1" />
+          <End Role="BillItems" Type="Self.BillItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bills">
+              <PropertyRef Name="BillID" />
+            </Principal>
+            <Dependent Role="BillItems">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_BillMonths">
+          <End Role="BillMonths" Type="Self.BillMonths" Multiplicity="0..1" />
+          <End Role="Bills" Type="Self.Bills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillMonths">
+              <PropertyRef Name="BillMonthID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="BillMonthID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_Units">
+          <End Role="Units" Type="Self.Units" Multiplicity="0..1" />
+          <End Role="Bills" Type="Self.Bills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="UnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Readings_BillMonth">
+          <End Role="BillMonths" Type="Self.BillMonths" Multiplicity="0..1" />
+          <End Role="Readings" Type="Self.Readings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillMonths">
+              <PropertyRef Name="BillMonthID" />
+            </Principal>
+            <Dependent Role="Readings">
+              <PropertyRef Name="BillMonthID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Readings_Unit">
+          <End Role="Units" Type="Self.Units" Multiplicity="0..1" />
+          <End Role="Readings" Type="Self.Readings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="Readings">
+              <PropertyRef Name="UnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Unit_Unit">
+          <End Role="Units" Type="Self.Units" Multiplicity="0..1" />
+          <End Role="Units1" Type="Self.Units" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="Units1">
+              <PropertyRef Name="UnitParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Unit_UnitType">
+          <End Role="UnitType" Type="Self.UnitType" Multiplicity="0..1" />
+          <End Role="Units" Type="Self.Units" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitType">
+              <PropertyRef Name="UnitTypeID" />
+            </Principal>
+            <Dependent Role="Units">
+              <PropertyRef Name="UnitTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RoverModelStoreContainer">
+          <EntitySet Name="BillableItems" EntityType="Self.BillableItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BillItems" EntityType="Self.BillItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BillItemType" EntityType="Self.BillItemType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BillMonths" EntityType="Self.BillMonths" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bills" EntityType="Self.Bills" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Readings" EntityType="Self.Readings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Units" EntityType="Self.Units" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitType" EntityType="Self.UnitType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_BillItem_BillItemType" Association="Self.FK_BillItem_BillItemType">
+            <End Role="BillItemType" EntitySet="BillItemType" />
+            <End Role="BillableItems" EntitySet="BillableItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BillItem_Unit" Association="Self.FK_BillItem_Unit">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="BillableItems" EntitySet="BillableItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BillItems_BillableItems" Association="Self.FK_BillItems_BillableItems">
+            <End Role="BillableItems" EntitySet="BillableItems" />
+            <End Role="BillItems" EntitySet="BillItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BillItems_Bills" Association="Self.FK_BillItems_Bills">
+            <End Role="Bills" EntitySet="Bills" />
+            <End Role="BillItems" EntitySet="BillItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_BillMonths" Association="Self.FK_Bills_BillMonths">
+            <End Role="BillMonths" EntitySet="BillMonths" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_Units" Association="Self.FK_Bills_Units">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Readings_BillMonth" Association="Self.FK_Readings_BillMonth">
+            <End Role="BillMonths" EntitySet="BillMonths" />
+            <End Role="Readings" EntitySet="Readings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Readings_Unit" Association="Self.FK_Readings_Unit">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="Readings" EntitySet="Readings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Unit_Unit" Association="Self.FK_Unit_Unit">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="Units1" EntitySet="Units" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Unit_UnitType" Association="Self.FK_Unit_UnitType">
+            <End Role="UnitType" EntitySet="UnitType" />
+            <End Role="Units" EntitySet="Units" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RoverModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BillableItem">
+          <Key>
+            <PropertyRef Name="BillableItemID" />
+          </Key>
+          <Property Name="BillableItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillableItemType" Type="Int32" />
+          <Property Name="UnitID" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="ActiveBillableItem" Type="Boolean" />
+          <NavigationProperty Name="BillItemType" Relationship="Self.FK_BillItem_BillItemType" FromRole="BillableItems" ToRole="BillItemType" />
+          <NavigationProperty Name="Unit" Relationship="Self.FK_BillItem_Unit" FromRole="BillableItems" ToRole="Units" />
+          <NavigationProperty Name="BillItems" Relationship="Self.FK_BillItems_BillableItems" FromRole="BillableItems" ToRole="BillItems" />
+        </EntityType>
+        <EntityType Name="BillItem">
+          <Key>
+            <PropertyRef Name="BillItemID" />
+          </Key>
+          <Property Name="BillItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillableItemID" Type="Int32" />
+          <Property Name="BillItemAmmount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="BillId" Type="Int32" />
+          <NavigationProperty Name="BillableItem" Relationship="Self.FK_BillItems_BillableItems" FromRole="BillItems" ToRole="BillableItems" />
+          <NavigationProperty Name="Bill" Relationship="Self.FK_BillItems_Bills" FromRole="BillItems" ToRole="Bills" />
+        </EntityType>
+        <EntityType Name="BillItemType">
+          <Key>
+            <PropertyRef Name="BillItemID" />
+          </Key>
+          <Property Name="BillItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillItemDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BillableItems" Relationship="Self.FK_BillItem_BillItemType" FromRole="BillItemType" ToRole="BillableItems" />
+        </EntityType>
+        <EntityType Name="BillMonth">
+          <Key>
+            <PropertyRef Name="BillMonthID" />
+          </Key>
+          <Property Name="BillMonthID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillMonthDate" Type="DateTime" Precision="0" />
+          <Property Name="BillMonthDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsActiveBillMonth" Type="Boolean" />
+          <NavigationProperty Name="Bills" Relationship="Self.FK_Bills_BillMonths" FromRole="BillMonths" ToRole="Bills" />
+          <NavigationProperty Name="Readings" Relationship="Self.FK_Readings_BillMonth" FromRole="BillMonths" ToRole="Readings" />
+        </EntityType>
+        <EntityType Name="Bill">
+          <Key>
+            <PropertyRef Name="BillID" />
+          </Key>
+          <Property Name="BillID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillMonthID" Type="Int32" />
+          <Property Name="UnitID" Type="Int32" />
+          <Property Name="BillTotal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="BillPaid" Type="Decimal" Precision="18" Scale="4" />
+          <NavigationProperty Name="BillItems" Relationship="Self.FK_BillItems_Bills" FromRole="Bills" ToRole="BillItems" />
+          <NavigationProperty Name="BillMonth" Relationship="Self.FK_Bills_BillMonths" FromRole="Bills" ToRole="BillMonths" />
+          <NavigationProperty Name="Unit" Relationship="Self.FK_Bills_Units" FromRole="Bills" ToRole="Units" />
+        </EntityType>
+        <EntityType Name="Reading">
+          <Key>
+            <PropertyRef Name="ReadingID" />
+          </Key>
+          <Property Name="ReadingID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReadingDate" Type="DateTime" Precision="3" />
+          <Property Name="ReadingValue" Type="Decimal" Precision="18" Scale="8" />
+          <Property Name="UnitID" Type="Int32" />
+          <Property Name="ReadingVariance" Type="Decimal" Precision="18" Scale="8" />
+          <Property Name="BillMonthID" Type="Int32" />
+          <NavigationProperty Name="BillMonth" Relationship="Self.FK_Readings_BillMonth" FromRole="Readings" ToRole="BillMonths" />
+          <NavigationProperty Name="Unit" Relationship="Self.FK_Readings_Unit" FromRole="Readings" ToRole="Units" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Unit">
+          <Key>
+            <PropertyRef Name="UnitID" />
+          </Key>
+          <Property Name="UnitID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UnitName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UnitTypeID" Type="Int32" />
+          <Property Name="UnitParentID" Type="Int32" />
+          <Property Name="UnitNumber" Type="Int32" />
+          <NavigationProperty Name="BillableItems" Relationship="Self.FK_BillItem_Unit" FromRole="Units" ToRole="BillableItems" />
+          <NavigationProperty Name="Bills" Relationship="Self.FK_Bills_Units" FromRole="Units" ToRole="Bills" />
+          <NavigationProperty Name="Readings" Relationship="Self.FK_Readings_Unit" FromRole="Units" ToRole="Readings" />
+          <NavigationProperty Name="Units1" Relationship="Self.FK_Unit_Unit" FromRole="Units" ToRole="Units1" />
+          <NavigationProperty Name="Unit1" Relationship="Self.FK_Unit_Unit" FromRole="Units1" ToRole="Units" />
+          <NavigationProperty Name="UnitType" Relationship="Self.FK_Unit_UnitType" FromRole="Units" ToRole="UnitType" />
+        </EntityType>
+        <EntityType Name="UnitType">
+          <Key>
+            <PropertyRef Name="UnitTypeID" />
+          </Key>
+          <Property Name="UnitTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UnitDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Units" Relationship="Self.FK_Unit_UnitType" FromRole="UnitType" ToRole="Units" />
+        </EntityType>
+        <Association Name="FK_BillItem_BillItemType">
+          <End Role="BillItemType" Type="Self.BillItemType" Multiplicity="0..1" />
+          <End Role="BillableItems" Type="Self.BillableItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillItemType">
+              <PropertyRef Name="BillItemID" />
+            </Principal>
+            <Dependent Role="BillableItems">
+              <PropertyRef Name="BillableItemType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BillItem_Unit">
+          <End Role="Units" Type="Self.Unit" Multiplicity="0..1" />
+          <End Role="BillableItems" Type="Self.BillableItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="BillableItems">
+              <PropertyRef Name="UnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BillItems_BillableItems">
+          <End Role="BillableItems" Type="Self.BillableItem" Multiplicity="0..1" />
+          <End Role="BillItems" Type="Self.BillItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillableItems">
+              <PropertyRef Name="BillableItemID" />
+            </Principal>
+            <Dependent Role="BillItems">
+              <PropertyRef Name="BillableItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BillItems_Bills">
+          <End Role="Bills" Type="Self.Bill" Multiplicity="0..1" />
+          <End Role="BillItems" Type="Self.BillItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bills">
+              <PropertyRef Name="BillID" />
+            </Principal>
+            <Dependent Role="BillItems">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_BillMonths">
+          <End Role="BillMonths" Type="Self.BillMonth" Multiplicity="0..1" />
+          <End Role="Bills" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillMonths">
+              <PropertyRef Name="BillMonthID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="BillMonthID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Readings_BillMonth">
+          <End Role="BillMonths" Type="Self.BillMonth" Multiplicity="0..1" />
+          <End Role="Readings" Type="Self.Reading" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillMonths">
+              <PropertyRef Name="BillMonthID" />
+            </Principal>
+            <Dependent Role="Readings">
+              <PropertyRef Name="BillMonthID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_Units">
+          <End Role="Units" Type="Self.Unit" Multiplicity="0..1" />
+          <End Role="Bills" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="UnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Readings_Unit">
+          <End Role="Units" Type="Self.Unit" Multiplicity="0..1" />
+          <End Role="Readings" Type="Self.Reading" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="Readings">
+              <PropertyRef Name="UnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Unit_Unit">
+          <End Role="Units" Type="Self.Unit" Multiplicity="0..1" />
+          <End Role="Units1" Type="Self.Unit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Units">
+              <PropertyRef Name="UnitID" />
+            </Principal>
+            <Dependent Role="Units1">
+              <PropertyRef Name="UnitParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Unit_UnitType">
+          <End Role="UnitType" Type="Self.UnitType" Multiplicity="0..1" />
+          <End Role="Units" Type="Self.Unit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitType">
+              <PropertyRef Name="UnitTypeID" />
+            </Principal>
+            <Dependent Role="Units">
+              <PropertyRef Name="UnitTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RoverEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BillableItems" EntityType="Self.BillableItem" />
+          <EntitySet Name="BillItems" EntityType="Self.BillItem" />
+          <EntitySet Name="BillItemTypes" EntityType="Self.BillItemType" />
+          <EntitySet Name="BillMonths" EntityType="Self.BillMonth" />
+          <EntitySet Name="Bills" EntityType="Self.Bill" />
+          <EntitySet Name="Readings" EntityType="Self.Reading" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Units" EntityType="Self.Unit" />
+          <EntitySet Name="UnitTypes" EntityType="Self.UnitType" />
+          <AssociationSet Name="FK_BillItem_BillItemType" Association="Self.FK_BillItem_BillItemType">
+            <End Role="BillItemType" EntitySet="BillItemTypes" />
+            <End Role="BillableItems" EntitySet="BillableItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BillItem_Unit" Association="Self.FK_BillItem_Unit">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="BillableItems" EntitySet="BillableItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BillItems_BillableItems" Association="Self.FK_BillItems_BillableItems">
+            <End Role="BillableItems" EntitySet="BillableItems" />
+            <End Role="BillItems" EntitySet="BillItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BillItems_Bills" Association="Self.FK_BillItems_Bills">
+            <End Role="Bills" EntitySet="Bills" />
+            <End Role="BillItems" EntitySet="BillItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_BillMonths" Association="Self.FK_Bills_BillMonths">
+            <End Role="BillMonths" EntitySet="BillMonths" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Readings_BillMonth" Association="Self.FK_Readings_BillMonth">
+            <End Role="BillMonths" EntitySet="BillMonths" />
+            <End Role="Readings" EntitySet="Readings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_Units" Association="Self.FK_Bills_Units">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Readings_Unit" Association="Self.FK_Readings_Unit">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="Readings" EntitySet="Readings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Unit_Unit" Association="Self.FK_Unit_Unit">
+            <End Role="Units" EntitySet="Units" />
+            <End Role="Units1" EntitySet="Units" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Unit_UnitType" Association="Self.FK_Unit_UnitType">
+            <End Role="UnitType" EntitySet="UnitTypes" />
+            <End Role="Units" EntitySet="Units" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RoverModelStoreContainer" CdmEntityContainer="RoverEntities">
+          <EntitySetMapping Name="BillableItems">
+            <EntityTypeMapping TypeName="RoverModel.BillableItem">
+              <MappingFragment StoreEntitySet="BillableItems">
+                <ScalarProperty Name="BillableItemID" ColumnName="BillableItemID" />
+                <ScalarProperty Name="BillableItemType" ColumnName="BillableItemType" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="ActiveBillableItem" ColumnName="ActiveBillableItem" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BillItems">
+            <EntityTypeMapping TypeName="RoverModel.BillItem">
+              <MappingFragment StoreEntitySet="BillItems">
+                <ScalarProperty Name="BillItemID" ColumnName="BillItemID" />
+                <ScalarProperty Name="BillableItemID" ColumnName="BillableItemID" />
+                <ScalarProperty Name="BillItemAmmount" ColumnName="BillItemAmmount" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BillItemTypes">
+            <EntityTypeMapping TypeName="RoverModel.BillItemType">
+              <MappingFragment StoreEntitySet="BillItemType">
+                <ScalarProperty Name="BillItemID" ColumnName="BillItemID" />
+                <ScalarProperty Name="BillItemDesc" ColumnName="BillItemDesc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BillMonths">
+            <EntityTypeMapping TypeName="RoverModel.BillMonth">
+              <MappingFragment StoreEntitySet="BillMonths">
+                <ScalarProperty Name="BillMonthID" ColumnName="BillMonthID" />
+                <ScalarProperty Name="BillMonthDate" ColumnName="BillMonthDate" />
+                <ScalarProperty Name="BillMonthDesc" ColumnName="BillMonthDesc" />
+                <ScalarProperty Name="IsActiveBillMonth" ColumnName="IsActiveBillMonth" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Bills">
+            <EntityTypeMapping TypeName="RoverModel.Bill">
+              <MappingFragment StoreEntitySet="Bills">
+                <ScalarProperty Name="BillID" ColumnName="BillID" />
+                <ScalarProperty Name="BillMonthID" ColumnName="BillMonthID" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="BillTotal" ColumnName="BillTotal" />
+                <ScalarProperty Name="BillPaid" ColumnName="BillPaid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Readings">
+            <EntityTypeMapping TypeName="RoverModel.Reading">
+              <MappingFragment StoreEntitySet="Readings">
+                <ScalarProperty Name="ReadingID" ColumnName="ReadingID" />
+                <ScalarProperty Name="ReadingDate" ColumnName="ReadingDate" />
+                <ScalarProperty Name="ReadingValue" ColumnName="ReadingValue" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="ReadingVariance" ColumnName="ReadingVariance" />
+                <ScalarProperty Name="BillMonthID" ColumnName="BillMonthID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="RoverModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Units">
+            <EntityTypeMapping TypeName="RoverModel.Unit">
+              <MappingFragment StoreEntitySet="Units">
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="UnitName" ColumnName="UnitName" />
+                <ScalarProperty Name="UnitTypeID" ColumnName="UnitTypeID" />
+                <ScalarProperty Name="UnitParentID" ColumnName="UnitParentID" />
+                <ScalarProperty Name="UnitNumber" ColumnName="UnitNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnitTypes">
+            <EntityTypeMapping TypeName="RoverModel.UnitType">
+              <MappingFragment StoreEntitySet="UnitType">
+                <ScalarProperty Name="UnitTypeID" ColumnName="UnitTypeID" />
+                <ScalarProperty Name="UnitDesc" ColumnName="UnitDesc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

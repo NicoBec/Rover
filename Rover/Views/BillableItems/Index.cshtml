@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Rover.Models.BillableItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActiveBillableItem)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BillItemType.BillItemDesc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unit.UnitName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Amount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ActiveBillableItem)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillItemType.BillItemDesc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Unit.UnitName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.BillableItemID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.BillableItemID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.BillableItemID })
+        </td>
+    </tr>
+}
+
+</table>

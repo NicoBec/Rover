@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Rover.Models.Bill>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.BillTotal)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BillPaid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BillMonth.BillMonthDesc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unit.UnitName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillTotal)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillPaid)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillMonth.BillMonthDesc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Unit.UnitName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.BillID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.BillID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.BillID })
+        </td>
+    </tr>
+}
+
+</table>

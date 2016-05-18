@@ -1,0 +1,42 @@
+﻿@model Rover.Models.BillItem
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BillItem</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BillItemAmmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BillItemAmmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BillableItem.BillableItemID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BillableItem.BillableItemID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Bill.BillID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bill.BillID)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BillItemID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

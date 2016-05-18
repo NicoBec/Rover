@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Rover.Models.Unit>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unit1.UnitName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitType.UnitDesc)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UnitName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UnitNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Unit1.UnitName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UnitType.UnitDesc)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.UnitID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.UnitID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.UnitID })
+        </td>
+    </tr>
+}
+
+</table>
