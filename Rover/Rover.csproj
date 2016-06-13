@@ -169,6 +169,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ReadingsController.cs" />
+    <Compile Include="Controllers\UnitMontlyController.cs" />
     <Compile Include="Controllers\UnitsController.cs" />
     <Compile Include="Controllers\UnitTypesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -216,6 +217,7 @@
     <Compile Include="Models\Unit.cs">
       <DependentUpon>RoverModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UnitMonthlyAccountItem.cs" />
     <Compile Include="Models\UnitType.cs">
       <DependentUpon>RoverModel.tt</DependentUpon>
     </Compile>
@@ -334,6 +336,7 @@
     <Content Include="Views\Readings\Details.cshtml" />
     <Content Include="Views\Readings\Edit.cshtml" />
     <Content Include="Views\Readings\Index.cshtml" />
+    <Content Include="Views\UnitMontly\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

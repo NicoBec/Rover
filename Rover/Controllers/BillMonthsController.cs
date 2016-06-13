@@ -50,11 +50,40 @@ namespace Rover.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.BillMonths.Add(billMonth);
-                db.SaveChanges();
+                using (var dbContextScope = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        db.BillMonths.Add(billMonth);
+                        db.SaveChanges();
+                        var units = db.Units;
+
+                        foreach (var item in units)
+                        {
+                            var newBill = new Bill() { BillMonthID = billMonth.BillMonthID, UnitID = item.UnitID, BillTotal = 0 };
+                            db.Bills.Add(newBill);
+                            db.SaveChanges();
+
+                            var billItems = db.BillableItems.Where(x => x.UnitID == item.UnitID);
+                            foreach (var billItem in billItems)
+                            {
+                                db.BillItems.Add(new BillItem() { BillableItemID = billItem.BillableItemID, BillItemAmmount = billItem.Amount, BillId = newBill.BillID });
+                                newBill.BillTotal += billItem.Amount;
+                            }
+                            db.SaveChanges();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContextScope.Rollback();
+                        throw;
+                    }
+                    dbContextScope.Commit();
+
+
+                }
                 return RedirectToAction("Index");
             }
-
             return View(billMonth);
         }
 
@@ -109,9 +138,32 @@ namespace Rover.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            BillMonth billMonth = db.BillMonths.Find(id);
-            db.BillMonths.Remove(billMonth);
-            db.SaveChanges();
+            using (var dbContextScope = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    BillMonth billMonth = db.BillMonths.Find(id);
+                    var bills = db.Bills.Where(x => x.BillMonthID == billMonth.BillMonthID);
+
+                    foreach (var item in bills)
+                    {
+                        db.BillItems.RemoveRange(item.BillItems);
+                    }
+                    db.SaveChanges();
+
+                    db.Bills.RemoveRange(bills);
+                    db.SaveChanges();
+
+                    db.BillMonths.Remove(billMonth);
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    dbContextScope.Rollback();
+                    throw;
+                }
+                dbContextScope.Commit();
+            }
             return RedirectToAction("Index");
         }
 
